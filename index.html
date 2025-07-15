@@ -159,11 +159,7 @@
     async function loadAspiranten() {
       const aspirantDropdown = document.getElementById("aspirant");
         try {
-          const response = await fetch("https://script.google.com/macros/s/AKfycbyTggMnEJI6q81fqi7ZW8pdzjOR_6WU3NaSHRvPNka3qEJQwtVdmeAUtGF4dGpm9HtbQQ/exec", {
-            headers: {
-              "Authorization": "Bearer " + idToken
-            }
-          });
+          const response = await fetch("https://script.google.com/macros/s/AKfycbyTggMnEJI6q81fqi7ZW8pdzjOR_6WU3NaSHRvPNka3qEJQwtVdmeAUtGF4dGpm9HtbQQ/exec?idToken=" + encodeURIComponent(idToken));
           const aspiranten = await response.json();
           aspirantDropdown.innerHTML = '<option value="">-- Kies aspirant --</option>';
           aspiranten.forEach(naam => {
