@@ -10,11 +10,13 @@
     body {
       font-family: Arial, sans-serif;
       margin: 2rem;
-      background: #f9f9f9;
+      background: linear-gradient(120deg, #e0f7fa, #ffffff);
     }
     .hidden { display: none; }
     h1, h2 { color: #333; }
     form, .overview {
+      border: 1px solid #ddd;
+      backdrop-filter: blur(3px);
       background: #fff;
       padding: 1.5rem;
       border-radius: 10px;
@@ -72,6 +74,12 @@
   </style>
 </head>
 <body>
+  <div style="text-align: center; margin-bottom: 2rem;">
+    <img src="https://svdeschutterij.nl/wp-content/uploads/2023/12/svschutterijpng.png" alt="SV De Schutterij" style="height: 100px;" />
+    <h1 style="margin-top: 0.5rem;">Logboek Aspirant Beurten</h1>
+    <p style="color: #555;">Alleen toegankelijk voor erkende begeleiders</p>
+  </div>
+    
   <div id="auth-wrapper">
     <h2>Begeleiders login</h2>
     <div id="g_id_onload"
@@ -86,9 +94,7 @@
     <form id="logForm">
       <label for="aspirant">Aspirant:</label>
       <select id="aspirant" name="aspirant" required>
-        <option value="">-- Kies aspirant --</option>
-        <option value="Jan Peeters">Jan Peeters</option>
-        <option value="Lisa Maes">Lisa Maes</option>
+        <option value="">-- Laden... --</option>
       </select>
 
       <label for="wapencategorie">Wapencategorie:</label>
@@ -149,6 +155,25 @@
       }).join('')));
     }
 
+    // Dynamisch laden van aspiranten uit Google Script
+    window.addEventListener("DOMContentLoaded", async () => {
+      const aspirantDropdown = document.getElementById("aspirant");
+      try {
+        const response = await fetch("https://script.google.com/macros/s/AKfycbyTggMnEJI6q81fqi7ZW8pdzjOR_6WU3NaSHRvPNka3qEJQwtVdmeAUtGF4dGpm9HtbQQ/exec");
+        const aspiranten = await response.json();
+        aspirantDropdown.innerHTML = '<option value="">-- Kies aspirant --</option>';
+        aspiranten.forEach(naam => {
+          const opt = document.createElement("option");
+          opt.value = naam;
+          opt.textContent = naam;
+          aspirantDropdown.appendChild(opt);
+        });
+      } catch (err) {
+        console.error("Fout bij ophalen aspiranten:", err);
+        aspirantDropdown.innerHTML = '<option value="">(Fout bij laden aspiranten van CSV)</option>';
+      }
+    });
+
     const beurtenTable = document.getElementById("beurtenTable");
 
     document.getElementById("logForm").addEventListener("submit", async function(e) {
@@ -167,14 +192,11 @@
       const payload = { aspirant, datum, begeleider, wapencategorie };
 
       try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbwk6cN2zRiCXNbHsutleDPJZtAR0EXE0SBc2KSAevr0Jjk1uWvdt2_hjzMF3UPcwbGs7g/exec", {
+        const response = await fetch("https://script.google.com/macros/s/AKfycbxc8ZDxaVbynSMuEIeAwZfRcVeS7hxg2EikVcXYKZP3e_MdZABYnnJH0hvv5cviEaBsmg/exec", {
           method: "POST",
           body: JSON.stringify(payload),
-          headers: {
-            "Content-Type": "application/json"
-          }
+          headers: { "Content-Type": "application/json" }
         });
-
         const result = await response.json();
         if (result.success) {
           document.getElementById("confirmation").style.display = "block";
