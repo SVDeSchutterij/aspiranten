@@ -107,10 +107,6 @@
       <label for="datum">Datum van beurt:</label>
       <input type="date" id="datum" name="datum" required>
 
-      <label for="tijdstip">Tijdstip:</label>
-      <input type="time" id="tijdstip" name="tijdstip" required>
-
-
       <label for="begeleider">Naam begeleider:</label>
       <input type="text" id="begeleider" name="begeleider" required>
 
@@ -127,6 +123,7 @@
           <tr>
             <th>#</th>
             <th>Datum</th>
+            <th>Tijdstip</th>
             <th>Begeleider</th>
             <th>Wapencategorie</th>
           </tr>
@@ -274,7 +271,7 @@ async function loadBeurtenVoorAspirant(aspirant, idToken) {
   try {
     const url = `${WEBAPP_URL}?action=getBeurten&aspirant=${encodeURIComponent(aspirant)}&idToken=${encodeURIComponent(idToken)}`;
     const response = await fetch(url);
-    const beurten = await response.json(); // verwacht array van {datum, begeleider, categorie}
+    const beurten = await response.json(); // verwacht array van {datum, tijdstip, begeleider, categorie}
 
     if (!Array.isArray(beurten)) {
       console.error("Ongeldige beurten-respons:", beurten);
@@ -297,6 +294,7 @@ function renderBeurtenTable(beurten) {
     tr.innerHTML = `
       <td>${i + 1}</td>
       <td>${formatDateDisplay(b.datum)}</td>
+      <td>${b.tijdstip || ""}</td>
       <td>${b.begeleider || ""}</td>
       <td>${b.categorie || ""}</td>
     `;
