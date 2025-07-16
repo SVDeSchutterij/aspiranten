@@ -1,1 +1,195 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <title>Logboek Aspirant Beurten</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      background: linear-gradient(120deg, #e0f7fa, #ffffff);
+    }
+    .hidden { display: none; }
+    h1, h2 { color: #333; }
+    form, .overview {
+      border: 1px solid #ddd;
+      backdrop-filter: blur(3px);
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin-bottom: 2rem;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    select, input[type="text"], input[type="date"] {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      margin-top: 1.5rem;
+      padding: 0.75rem 1.5rem;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    .submitted {
+      margin-top: 1rem;
+      padding: 1rem;
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      border-radius: 5px;
+      display: none;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      text-align: center;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <div style="text-align: center; margin-bottom: 2rem;">
+    <img src="https://svdeschutterij.nl/wp-content/uploads/2023/12/svschutterijpng.png" alt="SV De Schutterij" style="height: 100px;" />
+    <h1 style="margin-top: 0.5rem;">Logboek Aspirant Beurten</h1>
+    <p style="color: #555;">Alleen toegankelijk voor erkende begeleiders</p>
+  </div>
+    
+  <div id="auth-wrapper">
+    <h2>Login als begeleider</h2>
+    <div id="loginDiv"></div>
+  </div>
 
+  <div id="main-wrapper" class="hidden">
+    <h1>Logboek Aspirant Beurt</h1>
+    <form id="logForm">
+      <label for="aspirant">Aspirant:</label>
+      <select id="aspirant" name="aspirant" required>
+        <option value="">-- Laden, even geduld... --</option>
+      </select>
+
+      <label for="wapencategorie">Wapencategorie:</label>
+      <select id="wapencategorie" name="wapencategorie" required>
+        <option value="">-- Kies categorie --</option>
+        <option value="Pistool">Pistool</option>
+        <option value="Revolver">Revolver</option>
+        <option value="Karabijn">Karabijn</option>
+      </select>
+
+      <label for="datum">Datum van beurt:</label>
+      <input type="date" id="datum" name="datum" required>
+
+      <label for="begeleider">Naam begeleider:</label>
+      <input type="text" id="begeleider" name="begeleider" required>
+
+      <button type="submit">Beurt registreren</button>
+    </form>
+
+    <div class="overview">
+      <h2>Overzicht van 10 beurten</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Datum</th>
+            <th>Begeleider</th>
+            <th>Wapencategorie</th>
+          </tr>
+        </thead>
+        <tbody id="beurtenTable"></tbody>
+      </table>
+    </div>
+
+    <div class="submitted" id="confirmation">
+      Beurt succesvol geregistreerd!
+    </div>
+  </div>
+ <script>
+  const allowedEmails = ["stef_peelman@live.be", "svdeschutterij@gmail.com"];
+  let userEmail = "";
+
+window.onload = () => {
+  const loginDiv = document.getElementById("loginDiv");
+  if (!loginDiv) {
+    console.error("loginDiv niet gevonden in de DOM!");
+    return;
+  }
+
+  google.accounts.id.initialize({
+    client_id: "54445647330-tphhf34l3vhevmr709e23a4mlli47l5t.apps.googleusercontent.com",
+    callback: handleCredentialResponse
+  });
+
+  google.accounts.id.renderButton(loginDiv, {
+    theme: "outline",
+    size: "large"
+  });
+};
+
+  async function handleCredentialResponse(response) {
+    const token = response.credential;
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    userEmail = payload.email;
+
+    if (!allowedEmails.includes(userEmail)) {
+      document.body.innerHTML = "<h2>Geen toegang</h2>";
+      return;
+    }
+
+    document.getElementById("auth-wrapper").classList.add("hidden");
+    document.getElementById("main-wrapper").classList.remove("hidden");
+    document.getElementById("begeleider").value = userEmail;
+    document.getElementById("datum").valueAsDate = new Date();
+
+    loadAspiranten(token);
+  }
+
+  async function loadAspiranten(idToken) {
+    console.log("Oproep met idToken:", idToken);
+
+    const aspirantDropdown = document.getElementById("aspirant");
+    try {
+      const url = 'https://script.google.com/macros/s/AKfycbwEDUhpuRCCNG8KcKyQwWz4wz-tDih8OOwl98iVbD3xdFBygmzkEO2uxA3yEXmehS2_gw/exec?action=getAspiranten&idToken=${idToken}';
+      console.log("Fetch URL:", url);
+      const response = await fetch(url);
+      const aspiranten = await response.json();
+
+      aspirantDropdown.innerHTML = '<option value="">-- Kies aspirant --</option>';
+      aspiranten.forEach(naam => {
+        const opt = document.createElement("option");
+        opt.value = naam;
+        opt.textContent = naam;
+        aspirantDropdown.appendChild(opt);
+      });
+    } catch (err) {
+      console.error("Fout bij ophalen aspiranten:", err);
+      aspirantDropdown.innerHTML = '<option>(Fout bij laden)</option>';
+    }
+  }
+</script>
+</body>
+</html>
