@@ -177,7 +177,7 @@ window.onload = () => {
       console.log("Fetch URL:", url);
       const response = await fetch(url);
       const aspiranten = await response.json();
-
+      console.log("Aspiranten content: " + aspiranten);
       aspirantDropdown.innerHTML = '<option value="">-- Kies aspirant --</option>';
       aspiranten.forEach(naam => {
         const opt = document.createElement("option");
