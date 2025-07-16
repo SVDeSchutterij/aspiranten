@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Logboek Aspirant Beurten</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -12,71 +12,75 @@
       background: linear-gradient(120deg, #e0f7fa, #ffffff);
     }
     .hidden { display: none; }
-    h1, h2 { color: #333; }
-    form, .overview {
+    h1,h2 { color:#333; }
+    form,.overview {
       border: 1px solid #ddd;
       backdrop-filter: blur(3px);
-      background: #fff;
-      padding: 1.5rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      max-width: 600px;
-      margin-bottom: 2rem;
+      background:#fff;
+      padding:1.5rem;
+      border-radius:10px;
+      box-shadow:0 2px 5px rgba(0,0,0,0.1);
+      max-width:600px;
+      margin-bottom:2rem;
     }
     label {
-      display: block;
-      margin-top: 1rem;
-      font-weight: bold;
+      display:block;
+      margin-top:1rem;
+      font-weight:bold;
     }
-    select, input[type="text"], input[type="date"] {
-      width: 100%;
-      padding: 0.5rem;
-      margin-top: 0.25rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+    select,input[type="text"],input[type="date"] {
+      width:100%;
+      padding:0.5rem;
+      margin-top:0.25rem;
+      border:1px solid #ccc;
+      border-radius:5px;
     }
     button {
-      margin-top: 1.5rem;
-      padding: 0.75rem 1.5rem;
-      background-color: #28a745;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1rem;
+      margin-top:1.5rem;
+      padding:0.75rem 1.5rem;
+      background-color:#28a745;
+      color:white;
+      border:none;
+      border-radius:5px;
+      cursor:pointer;
+      font-size:1rem;
     }
-    button:hover {
-      background-color: #218838;
+    button:hover { background-color:#218838; }
+    #logoutBtn {
+      background-color:#dc3545;
+      margin-left:0.5rem;
+    }
+    #logoutBtn:hover {
+      background-color:#c82333;
     }
     .submitted {
-      margin-top: 1rem;
-      padding: 1rem;
-      background-color: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-      border-radius: 5px;
-      display: none;
+      margin-top:1rem;
+      padding:1rem;
+      background-color:#d4edda;
+      color:#155724;
+      border:1px solid #c3e6cb;
+      border-radius:5px;
+      display:none;
+      max-width:600px;
     }
     table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
+      width:100%;
+      border-collapse:collapse;
+      margin-top:1rem;
     }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 0.5rem;
-      text-align: center;
+    th,td {
+      border:1px solid #ccc;
+      padding:0.5rem;
+      text-align:center;
     }
-    th {
-      background-color: #f0f0f0;
-    }
+    th { background-color:#f0f0f0; }
   </style>
 </head>
 <body>
-  <div style="text-align: center; margin-bottom: 2rem;">
-    <img src="https://svdeschutterij.nl/wp-content/uploads/2023/12/svschutterijpng.png" alt="SV De Schutterij" style="height: 100px;" />
-    <h1 style="margin-top: 0.5rem;">Logboek Aspirant Beurten</h1>
-    <p style="color: #555;">Alleen toegankelijk voor erkende begeleiders</p>
+  <div style="text-align:center;margin-bottom:2rem;">
+    <img src="https://svdeschutterij.nl/wp-content/uploads/2023/12/svschutterijpng.png" alt="SV De Schutterij" style="height:100px;" />
+    <h1 style="margin-top:0.5rem;">Logboek Aspirant Beurten</h1>
+    <p style="color:#555;">Alleen toegankelijk voor erkende begeleiders</p>
   </div>
     
   <div id="auth-wrapper">
@@ -106,8 +110,10 @@
       <label for="begeleider">Naam begeleider:</label>
       <input type="text" id="begeleider" name="begeleider" required>
 
-      <button type="submit">Beurt registreren</button>
-      <button id="logoutBtn">Uitloggen</button>
+      <div>
+        <button type="submit">Beurt registreren</button>
+        <button type="button" id="logoutBtn">Uitloggen</button>
+      </div>
     </form>
 
     <div class="overview">
@@ -123,71 +129,98 @@
         </thead>
         <tbody id="beurtenTable"></tbody>
       </table>
-
     </div>
 
     <div class="submitted" id="confirmation">
       Beurt succesvol geregistreerd!
     </div>
   </div>
- <script>
-  const allowedEmails = ["stef_peelman@live.be", "svdeschutterij@gmail.com"];
-  let userEmail = "";
 
+<script>
+/* ------------------ CONFIG ------------------ */
+const allowedEmails = ["stef_peelman@live.be","svdeschutterij@gmail.com"];
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwEDUhpuRCCNG8KcKyQwWz4wz-tDih8OOwl98iVbD3xdFBygmzkEO2uxA3yEXmehS2_gw/exec"; // <-- VERVANG NIET als je optie 3 gebruikt; update enkel deployment
+let userEmail = "";
+let currentIdToken = "";
+
+/* ------------------ INIT ------------------ */
 window.onload = () => {
   const loginDiv = document.getElementById("loginDiv");
   if (!loginDiv) {
     console.error("loginDiv niet gevonden in de DOM!");
     return;
   }
-   // Check of gebruiker al is ingelogd via localStorage
+
+  // Bestaat sessie al?
   const savedToken = localStorage.getItem("idToken");
   const savedEmail = localStorage.getItem("email");
-  
+
   if (savedToken && allowedEmails.includes(savedEmail)) {
     userEmail = savedEmail;
+    currentIdToken = savedToken;
     showMainWrapper();
-    loadAspiranten(savedToken);
+    loadAspiranten(currentIdToken).then(() => {
+      // Als aspirant al gekozen? laad beurten
+      const asp = document.getElementById("aspirant").value;
+      if (asp) loadBeurtenVoorAspirant(asp, currentIdToken);
+    });
     return;
   }
   
+  // Geen sessie -> render GSI knop
   google.accounts.id.initialize({
     client_id: "54445647330-tphhf34l3vhevmr709e23a4mlli47l5t.apps.googleusercontent.com",
     callback: handleCredentialResponse,
-    auto_select: true   // ✅ Zorgt dat de gebruiker automatisch opnieuw wordt ingelogd
+    auto_select: true
   });
 
   google.accounts.id.renderButton(loginDiv, {
     theme: "outline",
     size: "large"
   });
-  google.accounts.id.prompt();
+
+  google.accounts.id.prompt(); // probeer automatische login
 };
 
-  async function handleCredentialResponse(response) {
-    const token = response.credential;
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    userEmail = payload.email;
+/* ------------------ LOGIN CALLBACK ------------------ */
+function handleCredentialResponse(response) {
+  const token = response.credential;
+  const payload = parseJwt(token);
+  userEmail = payload.email;
 
-    if (!allowedEmails.includes(userEmail)) {
-      document.body.innerHTML = "<h2>Geen toegang</h2>";
-      return;
-    }
-      // Sla info op in localStorage
-    localStorage.setItem("idToken", token);
-    localStorage.setItem("email", userEmail);
+  if (!allowedEmails.includes(userEmail)) {
+    document.body.innerHTML = "<h2>Geen toegang</h2>";
+    return;
+  }
 
-    showMainWrapper();
-    loadAspiranten(token);
-  }
-   
-  function showMainWrapper() {
-    document.getElementById("auth-wrapper").classList.add("hidden");
-    document.getElementById("main-wrapper").classList.remove("hidden");
-    document.getElementById("begeleider").value = userEmail;
-    document.getElementById("datum").valueAsDate = new Date();
-  }
-   // Logout knop
+  // Sessie opslaan
+  localStorage.setItem("idToken", token);
+  localStorage.setItem("email", userEmail);
+  currentIdToken = token;
+
+  showMainWrapper();
+  loadAspiranten(token);
+}
+
+/* ------------------ UTIL: JWT decode ------------------ */
+function parseJwt(token) {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(atob(base64).split('').map(c =>
+    '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+  ).join(''));
+  return JSON.parse(jsonPayload);
+}
+
+/* ------------------ UI HELPER ------------------ */
+function showMainWrapper() {
+  document.getElementById("auth-wrapper").classList.add("hidden");
+  document.getElementById("main-wrapper").classList.remove("hidden");
+  document.getElementById("begeleider").value = userEmail;
+  document.getElementById("datum").valueAsDate = new Date();
+}
+
+/* ------------------ LOGOUT ------------------ */
 document.addEventListener("click", (e) => {
   if (e.target.id === "logoutBtn") {
     localStorage.removeItem("idToken");
@@ -196,29 +229,146 @@ document.addEventListener("click", (e) => {
   }
 });
 
-  async function loadAspiranten(idToken) {
-    console.log("Oproep met idToken:", idToken);
+/* ------------------ ASPIRANTEN LADEN ------------------ */
+async function loadAspiranten(idToken) {
+  const aspirantDropdown = document.getElementById("aspirant");
+  aspirantDropdown.disabled = true;
+  aspirantDropdown.innerHTML = '<option value="">(laden...)</option>';
 
-    const aspirantDropdown = document.getElementById("aspirant");
-    try {
-      const url = `https://script.google.com/macros/s/AKfycbwEDUhpuRCCNG8KcKyQwWz4wz-tDih8OOwl98iVbD3xdFBygmzkEO2uxA3yEXmehS2_gw/exec?action=getAspiranten&idToken=${idToken}`;
-      console.log("Fetch URL:", url);
-      const response = await fetch(url);
-      const aspiranten = await response.json();
-      console.log("Aspiranten content: " + aspiranten);
-      console.log(JSON.stringify(aspiranten))
-      aspirantDropdown.innerHTML = '<option value="">-- Kies aspirant --</option>';
-      aspiranten.forEach(naam => {
-        const opt = document.createElement("option");
-        opt.value = naam;
-        opt.textContent = naam;
-        aspirantDropdown.appendChild(opt);
-      });
-    } catch (err) {
-      console.error("Fout bij ophalen aspiranten:", err);
-      aspirantDropdown.innerHTML = '<option>(Fout bij laden)</option>';
+  try {
+    const url = `${WEBAPP_URL}?action=getAspiranten&idToken=${encodeURIComponent(idToken)}`;
+    const response = await fetch(url);
+    const aspiranten = await response.json();
+
+    if (!Array.isArray(aspiranten)) {
+      console.error("Ongeldige aspiranten-respons:", aspiranten);
+      aspirantDropdown.innerHTML = '<option value="">(Fout bij laden)</option>';
+      return;
     }
+
+    aspirantDropdown.innerHTML = '<option value="">-- Kies aspirant --</option>';
+    aspiranten.forEach(naam => {
+      const opt = document.createElement("option");
+      opt.value = naam;
+      opt.textContent = naam;
+      aspirantDropdown.appendChild(opt);
+    });
+
+    aspirantDropdown.disabled = false;
+  } catch (err) {
+    console.error("Fout bij ophalen aspiranten:", err);
+    aspirantDropdown.innerHTML = '<option value="">(Fout bij laden)</option>';
   }
+}
+
+/* ------------------ BEURTEN LADEN ------------------ */
+async function loadBeurtenVoorAspirant(aspirant, idToken) {
+  if (!aspirant) return;
+  const tableBody = document.getElementById("beurtenTable");
+  tableBody.innerHTML = '<tr><td colspan="4">(laden...)</td></tr>';
+
+  try {
+    const url = `${WEBAPP_URL}?action=getBeurten&aspirant=${encodeURIComponent(aspirant)}&idToken=${encodeURIComponent(idToken)}`;
+    const response = await fetch(url);
+    const beurten = await response.json(); // verwacht array van {datum, begeleider, categorie}
+
+    if (!Array.isArray(beurten)) {
+      console.error("Ongeldige beurten-respons:", beurten);
+      tableBody.innerHTML = '<tr><td colspan="4">(fout)</td></tr>';
+      return;
+    }
+
+    renderBeurtenTable(beurten.slice(-10)); // laatste 10
+  } catch (err) {
+    console.error("Fout bij ophalen beurten:", err);
+    tableBody.innerHTML = '<tr><td colspan="4">(fout)</td></tr>';
+  }
+}
+
+function renderBeurtenTable(beurten) {
+  const tableBody = document.getElementById("beurtenTable");
+  tableBody.innerHTML = "";
+  beurten.forEach((b, i) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${i + 1}</td>
+      <td>${formatDateDisplay(b.datum)}</td>
+      <td>${b.begeleider || ""}</td>
+      <td>${b.categorie || ""}</td>
+    `;
+    tableBody.appendChild(tr);
+  });
+}
+
+function formatDateDisplay(d) {
+  if (!d) return "";
+  // d kan een ISO string of Apps Script string zijn
+  const dt = new Date(d);
+  if (isNaN(dt)) return d; // fallback
+  return dt.toLocaleDateString("nl-BE"); // bv. 17/07/2025
+}
+
+/* ------------------ FORM SUBMIT (BEURT OPSLAAN) ------------------ */
+document.getElementById("logForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const aspirant = document.getElementById("aspirant").value;
+  const begeleider = document.getElementById("begeleider").value;
+  const datum = document.getElementById("datum").value;
+  const wapencategorie = document.getElementById("wapencategorie").value;
+
+  if (!aspirant || !begeleider || !datum || !wapencategorie) {
+    alert("Gelieve alle velden in te vullen.");
+    return;
+  }
+
+  const idToken = currentIdToken || localStorage.getItem("idToken");
+  if (!idToken) {
+    alert("Je sessie is verlopen. Log opnieuw in.");
+    window.location.reload();
+    return;
+  }
+
+  const payload = {
+    idToken,
+    aspirant,
+    begeleider,
+    datum,
+    wapencategorie,
+    action: "logBeurt"
+  };
+
+  try {
+    const response = await fetch(WEBAPP_URL + "?action=logBeurt", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const result = await response.json();
+
+    if (result.success) {
+      document.getElementById("confirmation").style.display = "block";
+      setTimeout(() => {
+        document.getElementById("confirmation").style.display = "none";
+      }, 3000);
+      // refresh tabel
+      loadBeurtenVoorAspirant(aspirant, idToken);
+    } else {
+      alert("Fout: " + (result.error || "Onbekend"));
+    }
+  } catch (err) {
+    console.error("Submit error:", err);
+    alert("Netwerkfout tijdens verzenden.");
+  }
+});
+
+/* ------------------ ASPIRANT SELECT CHANGE -> LAAD BEURTEN ------------------ */
+document.getElementById("aspirant").addEventListener("change", () => {
+  const asp = document.getElementById("aspirant").value;
+  const idToken = currentIdToken || localStorage.getItem("idToken");
+  if (!asp || !idToken) return;
+  loadBeurtenVoorAspirant(asp, idToken);
+});
 </script>
 </body>
 </html>
