@@ -362,7 +362,7 @@ document.getElementById("logForm").addEventListener("submit", async (e) => {
     if (result.success) {
       document.getElementById("confirmation").style.display = "block";
         // Beurten opnieuw laden
-      loadBeurtenVoorAspirant(currentIdToken, aspirant);
+      loadBeurtenVoorAspirant(aspirant, idToken);
     } else {
       alert("Fout bij opslaan: " + (result.error || "Onbekende fout"));
     }
