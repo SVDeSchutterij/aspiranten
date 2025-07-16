@@ -122,6 +122,7 @@
         </thead>
         <tbody id="beurtenTable"></tbody>
       </table>
+      <button id="logoutBtn">Uitloggen</button>
     </div>
 
     <div class="submitted" id="confirmation">
@@ -138,7 +139,17 @@ window.onload = () => {
     console.error("loginDiv niet gevonden in de DOM!");
     return;
   }
-
+   // Check of gebruiker al is ingelogd via localStorage
+  const savedToken = localStorage.getItem("idToken");
+  const savedEmail = localStorage.getItem("email");
+  
+  if (savedToken && allowedEmails.includes(savedEmail)) {
+    userEmail = savedEmail;
+    showMainWrapper();
+    loadAspiranten(savedToken);
+    return;
+  }
+  
   google.accounts.id.initialize({
     client_id: "54445647330-tphhf34l3vhevmr709e23a4mlli47l5t.apps.googleusercontent.com",
     callback: handleCredentialResponse,
@@ -161,14 +172,28 @@ window.onload = () => {
       document.body.innerHTML = "<h2>Geen toegang</h2>";
       return;
     }
+      // Sla info op in localStorage
+    localStorage.setItem("idToken", token);
+    localStorage.setItem("email", userEmail);
 
+    showMainWrapper();
+    loadAspiranten(token);
+  }
+   
+  function showMainWrapper() {
     document.getElementById("auth-wrapper").classList.add("hidden");
     document.getElementById("main-wrapper").classList.remove("hidden");
     document.getElementById("begeleider").value = userEmail;
     document.getElementById("datum").valueAsDate = new Date();
-
-    loadAspiranten(token);
   }
+   // Logout knop
+document.addEventListener("click", (e) => {
+  if (e.target.id === "logoutBtn") {
+    localStorage.removeItem("idToken");
+    localStorage.removeItem("email");
+    window.location.reload();
+  }
+});
 
   async function loadAspiranten(idToken) {
     console.log("Oproep met idToken:", idToken);
