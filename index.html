@@ -201,7 +201,7 @@ document.addEventListener("click", (e) => {
 
     const aspirantDropdown = document.getElementById("aspirant");
     try {
-      const url = 'https://script.google.com/macros/s/AKfycbwEDUhpuRCCNG8KcKyQwWz4wz-tDih8OOwl98iVbD3xdFBygmzkEO2uxA3yEXmehS2_gw/exec?action=getAspiranten&idToken=${idToken}';
+      const url = `https://script.google.com/macros/s/AKfycbwEDUhpuRCCNG8KcKyQwWz4wz-tDih8OOwl98iVbD3xdFBygmzkEO2uxA3yEXmehS2_gw/exec?action=getAspiranten&idToken=${idToken}`;
       console.log("Fetch URL:", url);
       const response = await fetch(url);
       const aspiranten = await response.json();
