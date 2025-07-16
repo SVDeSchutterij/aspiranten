@@ -266,7 +266,7 @@ async function loadAspiranten(idToken) {
 async function loadBeurtenVoorAspirant(aspirant, idToken) {
   if (!aspirant) return;
   const tableBody = document.getElementById("beurtenTable");
-  tableBody.innerHTML = '<tr><td colspan="4">(laden...)</td></tr>';
+  tableBody.innerHTML = '<tr><td colspan="5">(laden...)</td></tr>';
 
   try {
     const url = `${WEBAPP_URL}?action=getBeurten&aspirant=${encodeURIComponent(aspirant)}&idToken=${encodeURIComponent(idToken)}`;
