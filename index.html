@@ -293,7 +293,7 @@ async function loadBeurtenVoorAspirant(aspirant, idToken) {
   tableBody.innerHTML = '<tr><td colspan="5">(laden...)</td></tr>';
 
   try {
-    const url = `${WEBAPP_URL}?action=getBeurten&aspirant=${encodeURIComponent(aspirant)}&idToken=${encodeURIComponent(idToken)}`;
+    const url = `${WEBAPP_URL}?action=getBeurten&aspirant=${aspirant}&idToken=${idToken}`;
     const response = await fetch(url);
     const beurten = await response.json(); // verwacht array van {datum, tijdstip, begeleider, categorie}
     console.log("URL: ", url);
@@ -344,11 +344,9 @@ document.getElementById("logForm").addEventListener("submit", async (e) => {
   const datum = document.getElementById("datum").value;
   const wapencategorie = document.getElementById("wapencategorie").value;
 
-  const idToken = localStorage.getItem("idToken");
-
   const params = new URLSearchParams({
     action: "logBeurt",
-    idToken,
+    currentIdToken,
     aspirant,
     begeleider,
     datum,
@@ -362,7 +360,7 @@ document.getElementById("logForm").addEventListener("submit", async (e) => {
     if (result.success) {
       document.getElementById("confirmation").style.display = "block";
         // Beurten opnieuw laden
-      loadBeurtenVoorAspirant(idToken, aspirant);
+      loadBeurtenVoorAspirant(currentIdToken, aspirant);
     } else {
       alert("Fout bij opslaan: " + (result.error || "Onbekende fout"));
     }
