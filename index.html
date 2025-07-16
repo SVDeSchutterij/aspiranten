@@ -141,7 +141,8 @@ window.onload = () => {
 
   google.accounts.id.initialize({
     client_id: "54445647330-tphhf34l3vhevmr709e23a4mlli47l5t.apps.googleusercontent.com",
-    callback: handleCredentialResponse
+    callback: handleCredentialResponse,
+    auto_select: true   // ✅ Zorgt dat de gebruiker automatisch opnieuw wordt ingelogd
   });
 
   google.accounts.id.renderButton(loginDiv, {
