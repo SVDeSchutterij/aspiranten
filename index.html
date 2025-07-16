@@ -107,6 +107,10 @@
       <label for="datum">Datum van beurt:</label>
       <input type="date" id="datum" name="datum" required>
 
+      <label for="tijdstip">Tijdstip:</label>
+      <input type="time" id="tijdstip" name="tijdstip" required>
+
+
       <label for="begeleider">Naam begeleider:</label>
       <input type="text" id="begeleider" name="begeleider" required>
 
@@ -325,6 +329,7 @@ document.getElementById("logForm").addEventListener("submit", async (e) => {
     aspirant,
     begeleider,
     datum,
+    tijdstip,
     wapencategorie
   });
 
