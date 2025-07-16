@@ -334,6 +334,8 @@ document.getElementById("logForm").addEventListener("submit", async (e) => {
 
     if (result.success) {
       document.getElementById("confirmation").style.display = "block";
+        // Beurten opnieuw laden
+      loadBeurten(idToken, aspirant);
     } else {
       alert("Fout bij opslaan: " + (result.error || "Onbekende fout"));
     }
@@ -349,6 +351,39 @@ document.getElementById("aspirant").addEventListener("change", () => {
   if (!asp || !idToken) return;
   loadBeurtenVoorAspirant(asp, idToken);
 });
+
+/* ------------------ ASPIRANT BEURT REGISTERED -> LAAD BEURTEN ------------------ */
+
+  async function loadBeurten(idToken, aspirantNaam) {
+  const tbody = document.getElementById("beurtenTable");
+  tbody.innerHTML = "<tr><td colspan='4'>Laden...</td></tr>";
+
+  try {
+    const url = `https://script.google.com/macros/s/AKfycbwEDUhpuRCCNG8KcKyQwWz4wz-tDih8OOwl98iVbD3xdFBygmzkEO2uxA3yEXmehS2_gw/exec?action=getBeurten&idToken=${idToken}&aspirant=${encodeURIComponent(aspirantNaam)}`;
+    const response = await fetch(url);
+    const beurten = await response.json();
+
+    if (Array.isArray(beurten)) {
+      tbody.innerHTML = "";
+
+      if (beurten.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='4'>(Geen beurten gevonden)</td></tr>";
+        return;
+      }
+
+      beurten.slice(-10).reverse().forEach((b, index) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${index + 1}</td><td>${b.datum}</td><td>${b.begeleider}</td><td>${b.categorie}</td>`;
+        tbody.appendChild(tr);
+      });
+    } else {
+      throw new Error("Beurten response is geen array.");
+    }
+  } catch (err) {
+    console.error("Fout bij laden beurten:", err);
+    tbody.innerHTML = "<tr><td colspan='4'>Fout bij laden</td></tr>";
+  }
+}
 </script>
 </body>
 </html>
