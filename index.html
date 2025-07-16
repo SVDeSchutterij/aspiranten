@@ -343,10 +343,12 @@ document.getElementById("logForm").addEventListener("submit", async (e) => {
   const begeleider = document.getElementById("begeleider").value;
   const datum = document.getElementById("datum").value;
   const wapencategorie = document.getElementById("wapencategorie").value;
+  const idToken = localStorage.getItem("idToken");
+
 
   const params = new URLSearchParams({
     action: "logBeurt",
-    currentIdToken,
+    idToken,
     aspirant,
     begeleider,
     datum,
