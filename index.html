@@ -317,49 +317,28 @@ document.getElementById("logForm").addEventListener("submit", async (e) => {
   const datum = document.getElementById("datum").value;
   const wapencategorie = document.getElementById("wapencategorie").value;
 
-  if (!aspirant || !begeleider || !datum || !wapencategorie) {
-    alert("Gelieve alle velden in te vullen.");
-    return;
-  }
+  const idToken = localStorage.getItem("idToken");
 
-  const idToken = currentIdToken || localStorage.getItem("idToken");
-  if (!idToken) {
-    alert("Je sessie is verlopen. Log opnieuw in.");
-    window.location.reload();
-    return;
-  }
-
-  const payload = {
+  const params = new URLSearchParams({
+    action: "logBeurt",
     idToken,
     aspirant,
     begeleider,
     datum,
-    wapencategorie,
-    action: "logBeurt"
-  };
+    wapencategorie
+  });
 
   try {
-    const response = await fetch(WEBAPP_URL + "?action=logBeurt", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-      mode: "cors"
-    });
+    const response = await fetch(`https://script.google.com/macros/s/AKfycbwEDUhpuRCCNG8KcKyQwWz4wz-tDih8OOwl98iVbD3xdFBygmzkEO2uxA3yEXmehS2_gw/exec?${params.toString()}`);
     const result = await response.json();
 
     if (result.success) {
       document.getElementById("confirmation").style.display = "block";
-      setTimeout(() => {
-        document.getElementById("confirmation").style.display = "none";
-      }, 3000);
-      // refresh tabel
-      loadBeurtenVoorAspirant(aspirant, idToken);
     } else {
-      alert("Fout: " + (result.error || "Onbekend"));
+      alert("Fout bij opslaan: " + (result.error || "Onbekende fout"));
     }
   } catch (err) {
-    console.error("Submit error:", err);
-    alert("Netwerkfout tijdens verzenden.");
+    console.error("Fout bij opslaan:", err);
   }
 });
 
