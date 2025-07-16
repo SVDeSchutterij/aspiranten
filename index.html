@@ -152,21 +152,45 @@ window.onload = () => {
     return;
   }
 
-  // Bestaat sessie al?
-  const savedToken = localStorage.getItem("idToken");
-  const savedEmail = localStorage.getItem("email");
+// Bestaat sessie al?
+const savedToken = localStorage.getItem("idToken");
+const savedEmail = localStorage.getItem("email");
 
-  if (savedToken && allowedEmails.includes(savedEmail)) {
-    userEmail = savedEmail;
-    currentIdToken = savedToken;
-    showMainWrapper();
-    loadAspiranten(currentIdToken).then(() => {
-      // Als aspirant al gekozen? laad beurten
-      const asp = document.getElementById("aspirant").value;
-      if (asp) loadBeurtenVoorAspirant(asp, currentIdToken);
+if (savedToken && savedEmail) {
+  // ✅ Controleer of token geldig is via Google API
+  fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${savedToken}`)
+    .then(res => {
+      if (!res.ok) throw new Error("Token ongeldig");
+      return res.json();
+    })
+    .then(info => {
+      if (
+        info.email_verified === "true" &&
+        allowedEmails.includes(info.email)
+      ) {
+        userEmail = info.email;
+        currentIdToken = savedToken;
+        showMainWrapper();
+
+        loadAspiranten(currentIdToken).then(() => {
+          // Als aspirant al gekozen? laad beurten
+          const asp = document.getElementById("aspirant").value;
+          if (asp) loadBeurtenVoorAspirant(asp, currentIdToken);
+        });
+      } else {
+        throw new Error("Email niet geverifieerd of geen toegang");
+      }
+    })
+    .catch(err => {
+      console.warn("Verlopen of ongeldig token:", err.message);
+      localStorage.removeItem("idToken");
+      localStorage.removeItem("email");
+      google.accounts.id.prompt(); // ❗️forceer login prompt opnieuw
     });
-    return;
-  }
+
+  return; // stop verdere login setup
+}
+
   
   // Geen sessie -> render GSI knop
   google.accounts.id.initialize({
