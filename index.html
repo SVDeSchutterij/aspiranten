@@ -296,17 +296,18 @@ async function loadBeurtenVoorAspirant(aspirant, idToken) {
     const url = `${WEBAPP_URL}?action=getBeurten&aspirant=${encodeURIComponent(aspirant)}&idToken=${encodeURIComponent(idToken)}`;
     const response = await fetch(url);
     const beurten = await response.json(); // verwacht array van {datum, tijdstip, begeleider, categorie}
-
+    console.log("URL: ", url);
+    console.log("Beurten: ", beurten);
     if (!Array.isArray(beurten)) {
       console.error("Ongeldige beurten-respons:", beurten);
-      tableBody.innerHTML = '<tr><td colspan="4">(fout)</td></tr>';
+      tableBody.innerHTML = '<tr><td colspan="5">(fout bij respons)</td></tr>';
       return;
     }
 
     renderBeurtenTable(beurten.slice(-10)); // laatste 10
   } catch (err) {
     console.error("Fout bij ophalen beurten:", err);
-    tableBody.innerHTML = '<tr><td colspan="4">(fout)</td></tr>';
+    tableBody.innerHTML = '<tr><td colspan="5">(fout bij ophalen)</td></tr>';
   }
 }
 
