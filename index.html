@@ -213,6 +213,11 @@ let userEmail = "";
 let currentIdToken = "";
 
 /* ------------------ INIT ------------------ */
+google.accounts.id.initialize({
+  client_id: "54445647330-tphhf34l3vhevmr709e23a4mlli47l5t.apps.googleusercontent.com",
+  callback: handleCredentialResponse,
+  auto_select: true
+});
 window.onload = () => {
   const loginDiv = document.getElementById("loginDiv");
   if (!loginDiv) {
@@ -253,7 +258,7 @@ if (savedToken && savedEmail) {
       console.warn("Verlopen of ongeldig token:", err.message);
       localStorage.removeItem("idToken");
       localStorage.removeItem("email");
-      google.accounts.id.prompt(); // ❗️forceer login prompt opnieuw
+      renderGoogleLogin(); // ✅ toon login opnieuw
     });
 
   return; // stop verdere login setup
@@ -456,6 +461,20 @@ document.getElementById("aspirant").addEventListener("change", () => {
   if (!asp || !idToken) return;
   loadBeurtenVoorAspirant(asp, idToken);
 });
+
+function renderGoogleLogin() {
+  const loginDiv = document.getElementById("loginDiv");
+  google.accounts.id.initialize({
+    client_id: "54445647330-tphhf34l3vhevmr709e23a4mlli47l5t.apps.googleusercontent.com",
+    callback: handleCredentialResponse,
+    auto_select: true
+  });
+  google.accounts.id.renderButton(loginDiv, {
+    theme: "outline",
+    size: "large"
+  });
+  google.accounts.id.prompt();
+}
 </script>
 </body>
 </html>
