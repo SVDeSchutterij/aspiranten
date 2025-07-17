@@ -225,11 +225,7 @@ google.accounts.id.initialize({
   callback: handleCredentialResponse,
   auto_select: true
 });
-    // Verberg alles voorlopig
-  document.getElementById("main-wrapper").style.display = "none";
-  document.getElementById("auth-wrapper").style.display = "none";
-  document.getElementById("error").style.display = "none";
-  
+
 // Bestaat sessie al?
 const savedToken = localStorage.getItem("idToken");
 const savedEmail = localStorage.getItem("email");
@@ -247,13 +243,7 @@ if (savedToken && savedEmail) {
       ) {
         userEmail = info.email;
         currentIdToken = savedToken;
-        showMainWrapper();
-
-        loadAspiranten(currentIdToken).then(() => {
-          // Als aspirant al gekozen? laad beurten
-          const asp = document.getElementById("aspirant").value;
-          if (asp) loadBeurtenVoorAspirant(asp, currentIdToken);
-        });
+        showMainApp();
       } else {
         throw new Error("Email niet geverifieerd of geen toegang");
       }
@@ -265,8 +255,8 @@ if (savedToken && savedEmail) {
         // Toon login
       document.getElementById("main-wrapper").style.display = "none";
       document.getElementById("auth-wrapper").style.display = "block";
-      toonGeenToegang();
-      renderGoogleLogin(); // ✅ toon login opnieuw
+      resetLogin();
+      //renderGoogleLogin(); // ✅ toon login opnieuw
     });
 
   return; // stop verdere login setup
@@ -288,28 +278,29 @@ if (savedToken && savedEmail) {
 };
 
 /* ------------------ LOGIN CALLBACK ------------------ */
-function handleCredentialResponse(response) {
- const idToken = response.credential;
-  fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${idToken}`)
-    .then(res => res.json())
-    .then(info => {
-      if (info.email_verified === "true" /* evt. extra controle */) {
-        localStorage.setItem("idToken", idToken);
-        localStorage.setItem("email", info.email);
+  function handleCredentialResponse(response) {
+    const idToken = response.credential;
 
-        document.getElementById("auth-wrapper").style.display = "none";
-        document.getElementById("main-wrapper").style.display = "block";
-
-        // Doorgaan met aspiranten laden
-        currentIdToken = idToken;
-        loadAspiranten(idToken);
-      } else {
-        throw new Error("Email niet geverifieerd");
-      }
-    })
-    .catch(err => {
-      alert("Inloggen mislukt: " + err.message);
-    });
+    fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${idToken}`)
+      .then(res => {
+        if (!res.ok) throw new Error("Tokeninfo mislukt");
+        return res.json();
+      })
+      .then(info => {
+        if (info.email_verified === "true") {
+          localStorage.setItem("idToken", idToken);
+          localStorage.setItem("email", info.email);
+          userEmail = info.email;
+          currentIdToken = idToken;
+          showMainApp();
+        } else {
+          throw new Error("Email niet geverifieerd");
+        }
+      })
+      .catch(err => {
+        alert("Inloggen mislukt: " + err.message);
+        resetLogin();
+      });
 }
 
 /* ------------------ UTIL: JWT decode ------------------ */
@@ -323,13 +314,38 @@ function parseJwt(token) {
 }
 
 /* ------------------ UI HELPER ------------------ */
-function showMainWrapper() {
-  document.getElementById("auth-wrapper").classList.add("hidden");
-  document.getElementById("main-wrapper").classList.remove("hidden");
-  document.getElementById("begeleider").value = userEmail;
-  document.getElementById("datum").valueAsDate = new Date();
-}
+ function showMainApp() {
+    document.getElementById("auth-wrapper").style.display = "none";
+    document.getElementById("main-wrapper").style.display = "block";
 
+    // eventueel je data ophalen
+    loadAspiranten(currentIdToken).then(() => {
+      // Als aspirant al gekozen? laad beurten
+      const asp = document.getElementById("aspirant").value;
+      if (asp) loadBeurtenVoorAspirant(asp, currentIdToken);
+    });
+  }
+
+  function resetLogin() {
+    // Toon login en verberg main
+    document.getElementById("auth-wrapper").style.display = "block";
+    document.getElementById("main-wrapper").style.display = "none";
+
+    localStorage.removeItem("idToken");
+    localStorage.removeItem("email");
+
+    // Google Login opnieuw renderen
+    google.accounts.id.initialize({
+      client_id: CLIENT_ID,
+      callback: handleCredentialResponse
+    });
+    google.accounts.id.renderButton(
+      document.getElementById("loginDiv"),
+      { theme: "outline", size: "large" }
+    );
+
+    google.accounts.id.prompt(); // optioneel
+  }
 /* ------------------ LOGOUT ------------------ */
 document.addEventListener("click", (e) => {
   if (e.target.id === "logoutBtn") {
