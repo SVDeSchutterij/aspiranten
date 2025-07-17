@@ -216,6 +216,7 @@ let currentIdToken = "";
 
 /* ------------------ INIT ------------------ */
 window.onload = () => {
+  console.log("window.onload start");
   const loginDiv = document.getElementById("loginDiv");
   if (!loginDiv) {
     console.error("loginDiv niet gevonden in de DOM!");
@@ -260,10 +261,9 @@ if (savedToken && savedEmail) {
       resetLogin();
       //renderGoogleLogin(); // ✅ toon login opnieuw
     });
-  console.log("Pagina geladen");
-  document.body.style.display = "block"; // test fix voor blanco
   return; // stop verdere login setup
 }
+  document.body.style.display = "block"; // ✅ toon de pagina sowieso bij first load
   
   // Geen sessie -> render GSI knop
   google.accounts.id.initialize({
