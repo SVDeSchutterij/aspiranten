@@ -207,9 +207,9 @@
     <div id="error-box" style="display:none; color: red; text-align:center; margin-top:1rem;"></div>
 
   </div>
-  <div id="loading-screen" style="text-align:center; margin-top:4rem;">
+<div id="loading-screen" style="display:flex;justify-content:center;align-items:center;min-height:60vh;flex-direction:column;text-align:center;">
   <p>🔐 Bezig met controleren van toegang...</p>
-  </div>
+</div>
 <script>
 /* ------------------ CONFIG ------------------ */
 const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyPhI2tUw8CAWapLvEzb_Xy1e7Hv8-XhOUmSC2WEiVPFS09TuoWW2kyWh7jp8n1ztcs/exec";
@@ -347,7 +347,7 @@ function parseJwt(token) {
 }
   
  function showMainApp() {
-    document.body.classList.remove("hidden");
+    document.getElementById("loading-screen").style.display = "none"; // ✅ verberg loading
     document.getElementById("auth-wrapper").style.display = "none";
     document.getElementById("main-wrapper").style.display = "block";
     setDefaultValues();
@@ -557,6 +557,7 @@ function toonGeenToegang(msg) {
   document.getElementById("error").innerText = msg;
   document.getElementById("error").style.display = "block";
   document.getElementById("main-wrapper").style.display = "none";
+  document.getElementById("loading-screen").style.display = "none"; // ✅ verberg loading
   google.accounts.id.prompt(); // Toon opnieuw login knop
 }
 </script>
