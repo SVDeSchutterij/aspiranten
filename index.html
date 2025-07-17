@@ -141,7 +141,7 @@
     }
   </style>
 </head>
-<body style="display: none">
+<body class="hidden">
   <div id="error" style="display:none; color:red; text-align:center; margin-top:20px;"></div>
   <div style="text-align:center;margin-bottom:2rem;">
     <img src="https://svdeschutterij.nl/wp-content/uploads/2023/12/svschutterijpng.png" alt="SV De Schutterij" style="height:100px;" />
@@ -262,7 +262,7 @@ if (savedToken && savedEmail) {
     });
   return; // stop verdere login setup
 }
-  document.body.style.display = "block"; // ✅ toon de pagina sowieso bij first load
+  document.body.classList.remove("hidden"); // ✅ toon de pagina sowieso bij first load
   
   // Geen sessie -> render GSI knop
   google.accounts.id.initialize({
@@ -328,7 +328,7 @@ function parseJwt(token) {
 }
   
  function showMainApp() {
-    document.body.style.display = "block";
+    document.body.classList.remove("hidden");
     document.getElementById("auth-wrapper").style.display = "none";
     document.getElementById("main-wrapper").style.display = "block";
     setDefaultValues();
@@ -348,7 +348,7 @@ function parseJwt(token) {
 
     localStorage.removeItem("idToken");
     localStorage.removeItem("email");
-    document.body.style.display = "block";
+    document.body.classList.remove("hidden");
     // Google Login opnieuw renderen
     google.accounts.id.initialize({
       client_id: "54445647330-tphhf34l3vhevmr709e23a4mlli47l5t.apps.googleusercontent.com",
