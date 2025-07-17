@@ -489,9 +489,13 @@ function renderGoogleLogin() {
 }
 
 function toonGeenToegang() {
+  console.warn("Geen toegang of fout bij login:", err.message);
+  localStorage.removeItem("idToken");
+  localStorage.removeItem("email");
   document.getElementById("error").innerText = msg;
   document.getElementById("error").style.display = "block";
   document.getElementById("mainWrapper").style.display = "none";
+  google.accounts.id.prompt(); // Toon opnieuw login knop
 }
 </script>
 </body>
