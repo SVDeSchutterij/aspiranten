@@ -262,6 +262,9 @@ if (savedToken && savedEmail) {
       console.warn("Verlopen of ongeldig token:", err.message);
       localStorage.removeItem("idToken");
       localStorage.removeItem("email");
+        // Toon login
+      document.getElementById("main-wrapper").style.display = "none";
+      document.getElementById("auth-wrapper").style.display = "block";
       toonGeenToegang();
       renderGoogleLogin(); // ✅ toon login opnieuw
     });
@@ -286,16 +289,27 @@ if (savedToken && savedEmail) {
 
 /* ------------------ LOGIN CALLBACK ------------------ */
 function handleCredentialResponse(response) {
-  const token = response.credential;
-  const payload = parseJwt(token);
-  userEmail = payload.email;
+ const idToken = response.credential;
+  fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${idToken}`)
+    .then(res => res.json())
+    .then(info => {
+      if (info.email_verified === "true" /* evt. extra controle */) {
+        localStorage.setItem("idToken", idToken);
+        localStorage.setItem("email", info.email);
 
-  // Sessie opslaan
-  localStorage.setItem("idToken", token);
-  localStorage.setItem("email", userEmail);
-  currentIdToken = token;
+        document.getElementById("auth-wrapper").style.display = "none";
+        document.getElementById("main-wrapper").style.display = "block";
 
-  loadAspiranten(token);
+        // Doorgaan met aspiranten laden
+        currentIdToken = idToken;
+        loadAspiranten(idToken);
+      } else {
+        throw new Error("Email niet geverifieerd");
+      }
+    })
+    .catch(err => {
+      alert("Inloggen mislukt: " + err.message);
+    });
 }
 
 /* ------------------ UTIL: JWT decode ------------------ */
