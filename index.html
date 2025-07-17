@@ -379,13 +379,11 @@ async function loadAspiranten(idToken) {
       opt.textContent = naam;
       aspirantDropdown.appendChild(opt);
     });
-    // ❗️Pas nu pas het formulier tonen
-    showMainWrapper();
     aspirantDropdown.disabled = false;
   } catch (err) {
   console.error("Fout bij ophalen aspiranten:", err);
     if (responseData.error && responseData.error.includes("Geen toegang")) {
-      toonGeenToegang();
+      resetLogin();
     } else {
       document.getElementById("aspirant").innerHTML = '<option>(Fout bij laden)</option>';
     }
@@ -412,7 +410,7 @@ async function loadBeurtenVoorAspirant(aspirant, idToken) {
   } catch (err) {
   console.error("Fout bij ophalen aspiranten:", err);
     if (responseData.error && responseData.error.includes("Geen toegang")) {
-      toonGeenToegang();
+      resetLogin();
     } else {
       document.getElementById("aspirant").innerHTML = '<option>(Fout bij laden)</option>';
     }
