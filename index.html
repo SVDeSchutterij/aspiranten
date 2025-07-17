@@ -213,18 +213,18 @@ let userEmail = "";
 let currentIdToken = "";
 
 /* ------------------ INIT ------------------ */
-google.accounts.id.initialize({
-  client_id: "54445647330-tphhf34l3vhevmr709e23a4mlli47l5t.apps.googleusercontent.com",
-  callback: handleCredentialResponse,
-  auto_select: true
-});
 window.onload = () => {
   const loginDiv = document.getElementById("loginDiv");
   if (!loginDiv) {
     console.error("loginDiv niet gevonden in de DOM!");
     return;
   }
-
+  
+google.accounts.id.initialize({
+  client_id: "54445647330-tphhf34l3vhevmr709e23a4mlli47l5t.apps.googleusercontent.com",
+  callback: handleCredentialResponse,
+  auto_select: true
+});
 // Bestaat sessie al?
 const savedToken = localStorage.getItem("idToken");
 const savedEmail = localStorage.getItem("email");
