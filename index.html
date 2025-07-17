@@ -260,6 +260,8 @@ if (savedToken && savedEmail) {
       resetLogin();
       //renderGoogleLogin(); // ✅ toon login opnieuw
     });
+  console.log("Pagina geladen");
+  document.body.style.display = "block"; // test fix voor blanco
   return; // stop verdere login setup
 }
   
