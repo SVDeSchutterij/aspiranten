@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="nl">1
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -342,13 +342,13 @@ function parseJwt(token) {
 
   function resetLogin() {
     // Toon login en verberg main
-    document.body.style.display = "block";
+    
     document.getElementById("auth-wrapper").style.display = "block";
     document.getElementById("main-wrapper").style.display = "none";
 
     localStorage.removeItem("idToken");
     localStorage.removeItem("email");
-
+    document.body.style.display = "block";
     // Google Login opnieuw renderen
     google.accounts.id.initialize({
       client_id: "54445647330-tphhf34l3vhevmr709e23a4mlli47l5t.apps.googleusercontent.com",
@@ -367,6 +367,7 @@ document.addEventListener("click", (e) => {
   if (e.target.id === "logoutBtn") {
     localStorage.removeItem("idToken");
     localStorage.removeItem("email");
+    resetLogin();
     window.location.reload();
   }
 });
