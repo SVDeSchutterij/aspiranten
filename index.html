@@ -225,6 +225,11 @@ google.accounts.id.initialize({
   callback: handleCredentialResponse,
   auto_select: true
 });
+    // Verberg alles voorlopig
+  mainWrapper.style.display = "none";
+  loginWrapper.style.display = "none";
+  errorDiv.style.display = "none";
+  
 // Bestaat sessie al?
 const savedToken = localStorage.getItem("idToken");
 const savedEmail = localStorage.getItem("email");
@@ -257,16 +262,12 @@ if (savedToken && savedEmail) {
       console.warn("Verlopen of ongeldig token:", err.message);
       localStorage.removeItem("idToken");
       localStorage.removeItem("email");
+      toonGeenToegang();
       renderGoogleLogin(); // ✅ toon login opnieuw
-        // Als expliciet 'Geen toegang' (uit backend)
-      if (err.message && err.message.includes("Geen toegang")) {
-        toonGeenToegang();
-      }
     });
 
   return; // stop verdere login setup
 }
-
   
   // Geen sessie -> render GSI knop
   google.accounts.id.initialize({
