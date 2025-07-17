@@ -394,7 +394,7 @@ async function loadAspiranten(idToken) {
     aspirantDropdown.disabled = false;
   } catch (err) {
   console.error("Fout bij ophalen aspiranten:", err);
-    if (responseData.error && responseData.error.includes("Geen toegang")) {
+    if (err.message && err.message.includes("Geen toegang")) {
       resetLogin();
     } else {
       document.getElementById("aspirant").innerHTML = '<option>(Fout bij laden)</option>';
@@ -421,7 +421,7 @@ async function loadBeurtenVoorAspirant(aspirant, idToken) {
     renderBeurtenTable(beurten.slice(-10)); // laatste 10
   } catch (err) {
   console.error("Fout bij ophalen aspiranten:", err);
-    if (responseData.error && responseData.error.includes("Geen toegang")) {
+    if (err.message && err.message.includes("Geen toegang")) {
       resetLogin();
     } else {
       document.getElementById("aspirant").innerHTML = '<option>(Fout bij laden)</option>';
@@ -529,13 +529,13 @@ function renderGoogleLogin() {
   google.accounts.id.prompt();
 }
 
-function toonGeenToegang() {
-  console.warn("Geen toegang of fout bij login:", err.message);
+function toonGeenToegang(msg) {
+  console.warn("Geen toegang of fout bij login:", msg);
   localStorage.removeItem("idToken");
   localStorage.removeItem("email");
   document.getElementById("error").innerText = msg;
   document.getElementById("error").style.display = "block";
-  document.getElementById("mainWrapper").style.display = "none";
+  document.getElementById("main-wrapper").style.display = "none";
   google.accounts.id.prompt(); // Toon opnieuw login knop
 }
 </script>
