@@ -348,14 +348,15 @@ async function loadAspiranten(idToken) {
     aspirantDropdown.disabled = false;
   } catch (err) {
   console.error("Fout bij ophalen aspiranten:", err);
-  if (err.message && err.message.includes("Geen toegang")) {
-    document.body.innerHTML = `
-      <div style="text-align:center; margin-top: 5rem;">
-        <h1 style="color: darkred;">Geen toegang</h1>
-        <p style="font-size: 1.2rem;">Je hebt geen toegangsrechten tot deze pagina.</p>
-      </div>`;
-  } else {
-    document.getElementById("aspirant").innerHTML = '<option>(Fout bij laden)</option>';
+    if (err.message && err.message.includes("Geen toegang")) {
+      document.body.innerHTML = `
+        <div style="text-align:center; margin-top: 5rem;">
+          <h1 style="color: darkred;">Geen toegang</h1>
+          <p style="font-size: 1.2rem;">Je hebt geen toegangsrechten tot deze pagina.</p>
+        </div>`;
+    } else {
+      document.getElementById("aspirant").innerHTML = '<option>(Fout bij laden)</option>';
+    }
   }
 }
 
@@ -378,14 +379,15 @@ async function loadBeurtenVoorAspirant(aspirant, idToken) {
     renderBeurtenTable(beurten.slice(-10)); // laatste 10
   } catch (err) {
   console.error("Fout bij ophalen aspiranten:", err);
-  if (err.message && err.message.includes("Geen toegang")) {
-    document.body.innerHTML = `
-      <div style="text-align:center; margin-top: 5rem;">
-        <h1 style="color: darkred;">Geen toegang</h1>
-        <p style="font-size: 1.2rem;">Je hebt geen toegangsrechten tot deze pagina.</p>
-      </div>`;
-  } else {
-    document.getElementById("aspirant").innerHTML = '<option>(Fout bij laden)</option>';
+    if (err.message && err.message.includes("Geen toegang")) {
+      document.body.innerHTML = `
+        <div style="text-align:center; margin-top: 5rem;">
+          <h1 style="color: darkred;">Geen toegang</h1>
+          <p style="font-size: 1.2rem;">Je hebt geen toegangsrechten tot deze pagina.</p>
+        </div>`;
+    } else {
+      document.getElementById("aspirant").innerHTML = '<option>(Fout bij laden)</option>';
+    }
   }
 }
 
