@@ -142,10 +142,7 @@
   </style>
 </head>
 <body>
-  <div id="error-wrapper" class="hidden" style="text-align:center; margin-top: 5rem;">
-    <h1 style="color: darkred;">Geen toegang</h1>
-    <p style="font-size: 1.2rem;">Je hebt geen toegangsrechten tot deze pagina.</p>
-  </div>
+  <div id="error" style="display:none; color:red; text-align:center; margin-top:20px;"></div>
   <div style="text-align:center;margin-bottom:2rem;">
     <img src="https://svdeschutterij.nl/wp-content/uploads/2023/12/svschutterijpng.png" alt="SV De Schutterij" style="height:100px;" />
     <h1 style="margin-top:0.5rem;">Logboek Aspirant Beurten</h1>
@@ -297,7 +294,6 @@ function handleCredentialResponse(response) {
   localStorage.setItem("email", userEmail);
   currentIdToken = token;
 
-  showMainWrapper();
   loadAspiranten(token);
 }
 
@@ -352,7 +348,8 @@ async function loadAspiranten(idToken) {
       opt.textContent = naam;
       aspirantDropdown.appendChild(opt);
     });
-
+    // ❗️Pas nu pas het formulier tonen
+    showMainWrapper();
     aspirantDropdown.disabled = false;
   } catch (err) {
   console.error("Fout bij ophalen aspiranten:", err);
@@ -492,10 +489,9 @@ function renderGoogleLogin() {
 }
 
 function toonGeenToegang() {
-  document.getElementById("auth-wrapper").classList.add("hidden");
-  document.getElementById("main-wrapper").classList.add("hidden");
-  const errorDiv = document.getElementById("error-wrapper");
-  if (errorDiv) errorDiv.classList.remove("hidden");
+  document.getElementById("error").innerText = msg;
+  document.getElementById("error").style.display = "block";
+  document.getElementById("mainWrapper").style.display = "none";
 }
 </script>
 </body>
