@@ -141,7 +141,7 @@
     }
   </style>
 </head>
-<body class="hidden">
+<body style="display: none;">
   <div id="error" style="display:none; color:red; text-align:center; margin-top:20px;"></div>
   <div style="text-align:center;margin-bottom:2rem;">
     <img src="https://svdeschutterij.nl/wp-content/uploads/2023/12/svschutterijpng.png" alt="SV De Schutterij" style="height:100px;" />
@@ -149,12 +149,12 @@
     <p style="color:#555;">Alleen toegankelijk voor erkende begeleiders</p>
   </div>
     
-  <div id="auth-wrapper">
+ <div id="auth-wrapper" style="display: none">
     <h2>Login als begeleider</h2>
     <div id="loginDiv"></div>
   </div>
 
-  <div id="main-wrapper" style="display: none">
+ <div id="main-wrapper" style="display: none">
     <form id="logForm">
       <label for="aspirant">Aspirant:</label>
       <select id="aspirant" name="aspirant" required>
@@ -207,7 +207,9 @@
     <div id="error-box" style="display:none; color: red; text-align:center; margin-top:1rem;"></div>
 
   </div>
-
+  <div id="loading-screen" style="text-align:center; margin-top:4rem;">
+  <p>🔐 Bezig met controleren van toegang...</p>
+  </div>
 <script>
 /* ------------------ CONFIG ------------------ */
 const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyPhI2tUw8CAWapLvEzb_Xy1e7Hv8-XhOUmSC2WEiVPFS09TuoWW2kyWh7jp8n1ztcs/exec";
@@ -217,6 +219,9 @@ let currentIdToken = "";
 /* ------------------ INIT ------------------ */
 window.onload = () => {
   const loginDiv = document.getElementById("loginDiv");
+  const loadingScreen = document.getElementById("loading-screen");
+  document.body.style.display = "block"; // toon iets
+
   if (!loginDiv) {
     console.error("loginDiv niet gevonden in de DOM!");
     return;
@@ -254,13 +259,18 @@ if (savedToken && savedEmail) {
       console.warn("Verlopen of ongeldig token:", err.message);
       localStorage.removeItem("idToken");
       localStorage.removeItem("email");
+      loadingScreen.style.display = "none";
+
         // Toon login
       document.getElementById("main-wrapper").style.display = "none";
       document.getElementById("auth-wrapper").style.display = "block";
-      resetLogin();
+      showLogin();
       //renderGoogleLogin(); // ✅ toon login opnieuw
     });
   return; // stop verdere login setup
+} else {
+    loadingScreen.style.display = "none";
+    showLogin();
 }
   document.body.classList.remove("hidden"); // ✅ toon de pagina sowieso bij first load
   
@@ -316,6 +326,15 @@ function parseJwt(token) {
 }
 
 /* ------------------ UI HELPER ------------------ */
+  function showLogin() {
+  document.getElementById("auth-wrapper").style.display = "block";
+  google.accounts.id.renderButton(
+    document.getElementById("loginDiv"),
+    { theme: "outline", size: "large" }
+  );
+  google.accounts.id.prompt();
+}
+  
   function setDefaultValues() {
   // ✅ Vandaag als datum
   const today = new Date().toISOString().split("T")[0];
