@@ -204,6 +204,8 @@
     <div class="submitted" id="confirmation">
       Beurt succesvol geregistreerd!
     </div>
+    <div id="error-box" style="display:none; color: red; text-align:center; margin-top:1rem;"></div>
+
   </div>
 
 <script>
@@ -375,7 +377,29 @@ async function loadAspiranten(idToken) {
 
   try {
     const url = `${WEBAPP_URL}?action=getAspiranten&idToken=${encodeURIComponent(idToken)}`;
-    const response = await fetch(url);
+    const response = await fetch(url)
+      .then(r => r.json())
+    .then(data => {
+      if (data.error) throw new Error(data.error);
+      // ... normale aspiranten laden
+    })
+    .catch(err => {
+      console.error("Fout tijdens aspiranten laden:", err.message);
+  
+      // 👉 Foutmelding tonen
+      document.getElementById("error-box").textContent = "Toegang geweigerd: " + err.message;
+      document.getElementById("error-box").style.display = "block";
+  
+      // 👉 LocalStorage opruimen
+      localStorage.removeItem("idToken");
+      localStorage.removeItem("email");
+  
+      // 👉 Formulier verbergen
+      document.getElementById("main-wrapper").style.display = "none";
+  
+      // 👉 Login prompt tonen
+      google.accounts.id.prompt();
+    });
     const aspiranten = await response.json();
 
     if (!Array.isArray(aspiranten)) {
