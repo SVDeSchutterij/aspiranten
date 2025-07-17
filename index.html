@@ -142,6 +142,10 @@
   </style>
 </head>
 <body>
+  <div id="error-wrapper" class="hidden" style="text-align:center; margin-top: 5rem;">
+    <h1 style="color: darkred;">Geen toegang</h1>
+    <p style="font-size: 1.2rem;">Je hebt geen toegangsrechten tot deze pagina.</p>
+  </div>
   <div style="text-align:center;margin-bottom:2rem;">
     <img src="https://svdeschutterij.nl/wp-content/uploads/2023/12/svschutterijpng.png" alt="SV De Schutterij" style="height:100px;" />
     <h1 style="margin-top:0.5rem;">Logboek Aspirant Beurten</h1>
@@ -257,6 +261,10 @@ if (savedToken && savedEmail) {
       localStorage.removeItem("idToken");
       localStorage.removeItem("email");
       renderGoogleLogin(); // ✅ toon login opnieuw
+        // Als expliciet 'Geen toegang' (uit backend)
+      if (err.message && err.message.includes("Geen toegang")) {
+        toonGeenToegang();
+      }
     });
 
   return; // stop verdere login setup
@@ -349,11 +357,7 @@ async function loadAspiranten(idToken) {
   } catch (err) {
   console.error("Fout bij ophalen aspiranten:", err);
     if (err.message && err.message.includes("Geen toegang")) {
-      document.body.innerHTML = `
-        <div style="text-align:center; margin-top: 5rem;">
-          <h1 style="color: darkred;">Geen toegang</h1>
-          <p style="font-size: 1.2rem;">Je hebt geen toegangsrechten tot deze pagina.</p>
-        </div>`;
+      toonGeenToegang();
     } else {
       document.getElementById("aspirant").innerHTML = '<option>(Fout bij laden)</option>';
     }
@@ -380,11 +384,7 @@ async function loadBeurtenVoorAspirant(aspirant, idToken) {
   } catch (err) {
   console.error("Fout bij ophalen aspiranten:", err);
     if (err.message && err.message.includes("Geen toegang")) {
-      document.body.innerHTML = `
-        <div style="text-align:center; margin-top: 5rem;">
-          <h1 style="color: darkred;">Geen toegang</h1>
-          <p style="font-size: 1.2rem;">Je hebt geen toegangsrechten tot deze pagina.</p>
-        </div>`;
+      toonGeenToegang();
     } else {
       document.getElementById("aspirant").innerHTML = '<option>(Fout bij laden)</option>';
     }
@@ -483,6 +483,13 @@ function renderGoogleLogin() {
     size: "large"
   });
   google.accounts.id.prompt();
+}
+
+function toonGeenToegang() {
+  document.getElementById("auth-wrapper").classList.add("hidden");
+  document.getElementById("main-wrapper").classList.add("hidden");
+  const errorDiv = document.getElementById("error-wrapper");
+  if (errorDiv) errorDiv.classList.remove("hidden");
 }
 </script>
 </body>
