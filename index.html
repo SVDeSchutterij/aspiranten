@@ -207,8 +207,7 @@
 
 <script>
 /* ------------------ CONFIG ------------------ */
-const allowedEmails = ["stef_peelman@live.be","svdeschutterij@gmail.com"];
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwEDUhpuRCCNG8KcKyQwWz4wz-tDih8OOwl98iVbD3xdFBygmzkEO2uxA3yEXmehS2_gw/exec"; // <-- VERVANG NIET als je optie 3 gebruikt; update enkel deployment
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwEDUhpuRCCNG8KcKyQwWz4wz-tDih8OOwl98iVbD3xdFBygmzkEO2uxA3yEXmehS2_gw/exec";
 let userEmail = "";
 let currentIdToken = "";
 
@@ -285,11 +284,6 @@ function handleCredentialResponse(response) {
   const token = response.credential;
   const payload = parseJwt(token);
   userEmail = payload.email;
-
-  if (!allowedEmails.includes(userEmail)) {
-    document.body.innerHTML = "<h2>Geen toegang</h2>";
-    return;
-  }
 
   // Sessie opslaan
   localStorage.setItem("idToken", token);
