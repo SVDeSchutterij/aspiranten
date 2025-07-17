@@ -68,8 +68,8 @@
     }
     table {
       width:100%;
-      border-collapse:collapse;
-      margin-top:1rem;
+      min-width: 400px; /* voorkomt dat kolommen te smal worden */
+      border-collapse: collapse;
     }
     th,td {
       border:1px solid #ccc;
@@ -85,6 +85,7 @@
     .table-wrapper {
       width: 100%;
       overflow-x: auto;
+      margin: 0 auto;
     }
     /* ✅ Mobiele optimalisatie */
     @media (max-width: 600px) {
@@ -119,6 +120,24 @@
         width: 100%;
         font-size: 1rem;
       }
+      .button-group {
+        width: 100%;
+      }
+      .button-group button {
+        font-size: 1rem;
+      }
+    }
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+    
+    .button-group button {
+      width: 100%;
+      max-width: 300px;
     }
   </style>
 </head>
@@ -156,8 +175,10 @@
       <input type="text" id="begeleider" name="begeleider" required>
 
       <div>
-        <button type="submit">Beurt registreren</button>
-        <button type="button" id="logoutBtn">Uitloggen</button>
+        <div class="button-group">
+          <button type="submit">Beurt registreren</button>
+          <button type="button" id="logoutBtn">Uitloggen</button>
+        </div>
       </div>
     </form>
 
