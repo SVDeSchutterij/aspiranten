@@ -347,8 +347,9 @@ function parseJwt(token) {
 
     // Google Login opnieuw renderen
     google.accounts.id.initialize({
-      client_id: CLIENT_ID,
-      callback: handleCredentialResponse
+      client_id: "54445647330-tphhf34l3vhevmr709e23a4mlli47l5t.apps.googleusercontent.com",
+      callback: handleCredentialResponse,
+      auto_select: true
     });
     google.accounts.id.renderButton(
       document.getElementById("loginDiv"),
