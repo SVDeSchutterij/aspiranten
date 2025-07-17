@@ -356,7 +356,7 @@ async function loadAspiranten(idToken) {
     aspirantDropdown.disabled = false;
   } catch (err) {
   console.error("Fout bij ophalen aspiranten:", err);
-    if (err.message && err.message.includes("Geen toegang")) {
+    if (responseData.error && responseData.error.includes("Geen toegang")) {
       toonGeenToegang();
     } else {
       document.getElementById("aspirant").innerHTML = '<option>(Fout bij laden)</option>';
@@ -383,7 +383,7 @@ async function loadBeurtenVoorAspirant(aspirant, idToken) {
     renderBeurtenTable(beurten.slice(-10)); // laatste 10
   } catch (err) {
   console.error("Fout bij ophalen aspiranten:", err);
-    if (err.message && err.message.includes("Geen toegang")) {
+    if (responseData.error && responseData.error.includes("Geen toegang")) {
       toonGeenToegang();
     } else {
       document.getElementById("aspirant").innerHTML = '<option>(Fout bij laden)</option>';
@@ -456,8 +456,8 @@ document.getElementById("logForm").addEventListener("submit", async (e) => {
     }
   } catch (err) {
       // Als expliciet 'Geen toegang' (uit backend)
-      if (err.message && err.message.includes("Geen toegang")) {
-        toonGeenToegang();
+    if (responseData.error && responseData.error.includes("Geen toegang")) {
+      toonGeenToegang();
       }
     console.error("Fout bij opslaan:", err);
     
