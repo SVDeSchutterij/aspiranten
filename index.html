@@ -237,8 +237,7 @@ if (savedToken && savedEmail) {
     })
     .then(info => {
       if (
-        info.email_verified === "true" &&
-        allowedEmails.includes(info.email)
+        info.email_verified === "true"
       ) {
         userEmail = info.email;
         currentIdToken = savedToken;
