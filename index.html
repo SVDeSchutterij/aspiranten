@@ -455,7 +455,12 @@ document.getElementById("logForm").addEventListener("submit", async (e) => {
       alert("Fout bij opslaan: " + (result.error || "Onbekende fout"));
     }
   } catch (err) {
+      // Als expliciet 'Geen toegang' (uit backend)
+      if (err.message && err.message.includes("Geen toegang")) {
+        toonGeenToegang();
+      }
     console.error("Fout bij opslaan:", err);
+    
   }
   
   // Zet knop terug aan en herstel tekst
