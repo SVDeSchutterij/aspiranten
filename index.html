@@ -211,7 +211,7 @@
 
 <script>
 /* ------------------ CONFIG ------------------ */
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwEDUhpuRCCNG8KcKyQwWz4wz-tDih8OOwl98iVbD3xdFBygmzkEO2uxA3yEXmehS2_gw/exec";
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyPhI2tUw8CAWapLvEzb_Xy1e7Hv8-XhOUmSC2WEiVPFS09TuoWW2kyWh7jp8n1ztcs/exec";
 let userEmail = "";
 let currentIdToken = "";
 
@@ -441,7 +441,8 @@ document.getElementById("logForm").addEventListener("submit", async (e) => {
   });
 
   try {
-    const response = await fetch(`https://script.google.com/macros/s/AKfycbwEDUhpuRCCNG8KcKyQwWz4wz-tDih8OOwl98iVbD3xdFBygmzkEO2uxA3yEXmehS2_gw/exec?${params.toString()}`);
+    const url = `${WEBAPP_URL}?${params.toString()}`;
+    const response = await fetch(url);
     const result = await response.json();
 
     if (result.success) {
