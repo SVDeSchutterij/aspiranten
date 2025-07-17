@@ -314,10 +314,21 @@ function parseJwt(token) {
 }
 
 /* ------------------ UI HELPER ------------------ */
+  function setDefaultValues() {
+  // ✅ Vandaag als datum
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("datum").value = today;
+
+  // ✅ Ingelogde gebruiker als begeleider
+  if (userEmail) {
+    document.getElementById("begeleider").value = userEmail;
+  }
+}
+  
  function showMainApp() {
     document.getElementById("auth-wrapper").style.display = "none";
     document.getElementById("main-wrapper").style.display = "block";
-
+    setDefaultValues();
     // eventueel je data ophalen
     loadAspiranten(currentIdToken).then(() => {
       // Als aspirant al gekozen? laad beurten
