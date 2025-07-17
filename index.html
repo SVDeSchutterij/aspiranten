@@ -296,8 +296,6 @@ async function loadBeurtenVoorAspirant(aspirant, idToken) {
     const url = `${WEBAPP_URL}?action=getBeurten&aspirant=${aspirant}&idToken=${idToken}`;
     const response = await fetch(url);
     const beurten = await response.json(); // verwacht array van {datum, tijdstip, begeleider, categorie}
-    console.log("URL: ", url);
-    console.log("Beurten: ", beurten);
     if (!Array.isArray(beurten)) {
       console.error("Ongeldige beurten-respons:", beurten);
       tableBody.innerHTML = '<tr><td colspan="5">(fout bij respons)</td></tr>';
@@ -344,8 +342,13 @@ document.getElementById("logForm").addEventListener("submit", async (e) => {
   const datum = document.getElementById("datum").value;
   const wapencategorie = document.getElementById("wapencategorie").value;
   const idToken = localStorage.getItem("idToken");
+  const submitBtn = e.target.querySelector('button[type="submit"]');
 
-
+  // Disable knop en verander tekst
+  submitBtn.disabled = true;
+  const origineleText = submitBtn.textContent;
+  submitBtn.textContent = "Even geduld...";
+  
   const params = new URLSearchParams({
     action: "logBeurt",
     idToken,
@@ -360,7 +363,10 @@ document.getElementById("logForm").addEventListener("submit", async (e) => {
     const result = await response.json();
 
     if (result.success) {
-      document.getElementById("confirmation").style.display = "block";
+         document.getElementById("confirmation").style.display = "block";
+      setTimeout(() => {
+        document.getElementById("confirmation").style.display = "none";
+      }, 3000);
         // Beurten opnieuw laden
       loadBeurtenVoorAspirant(aspirant, idToken);
     } else {
@@ -369,6 +375,10 @@ document.getElementById("logForm").addEventListener("submit", async (e) => {
   } catch (err) {
     console.error("Fout bij opslaan:", err);
   }
+  
+  // Zet knop terug aan en herstel tekst
+  submitBtn.disabled = false;
+  submitBtn.textContent = origineleText;
 });
 
 /* ------------------ ASPIRANT SELECT CHANGE -> LAAD BEURTEN ------------------ */
